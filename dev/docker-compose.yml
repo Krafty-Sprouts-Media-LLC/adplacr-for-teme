@@ -1,0 +1,52 @@
+# The same three services as teme-dev's own docker-compose.yml, on other host ports,
+# because 5432, 5433 and 6380 were already taken on this machine (see FINDINGS.md F-02).
+# Start with: docker compose -f dev/docker-compose.yml -p adplacr-dev up -d
+name: adplacr-dev
+
+services:
+    postgres:
+        image: postgres:18-alpine
+        environment:
+            POSTGRES_DB: teme
+            POSTGRES_USER: teme
+            POSTGRES_PASSWORD: teme
+        ports:
+            - '5442:5432'
+        volumes:
+            - pgdata:/var/lib/postgresql
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U teme -d teme']
+            interval: 5s
+            timeout: 5s
+            retries: 10
+
+    postgres_test:
+        image: postgres:18-alpine
+        environment:
+            POSTGRES_DB: teme_test
+            POSTGRES_USER: teme
+            POSTGRES_PASSWORD: teme
+        ports:
+            - '5443:5432'
+        tmpfs:
+            - /var/lib/postgresql
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready -U teme -d teme_test']
+            interval: 5s
+            timeout: 5s
+            retries: 10
+
+    valkey_test:
+        image: valkey/valkey:9.1-alpine
+        ports:
+            - '6390:6379'
+        tmpfs:
+            - /data
+        healthcheck:
+            test: ['CMD', 'valkey-cli', 'ping']
+            interval: 5s
+            timeout: 5s
+            retries: 10
+
+volumes:
+    pgdata:

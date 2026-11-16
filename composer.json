@@ -1,0 +1,15 @@
+{
+    "name": "krafty-sprouts/adplacr",
+    "description": "Ad Placr for TemeCMS: places ad code inside articles.",
+    "type": "teme-plugin",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "php": "^8.4",
+        "teme/contracts": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "KraftySprouts\\AdPlacr\\": "src/"
+        }
+    }
+}

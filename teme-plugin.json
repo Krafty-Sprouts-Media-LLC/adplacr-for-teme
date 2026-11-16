@@ -1,0 +1,13 @@
+{
+    "manifest": 1,
+    "name": "krafty-sprouts/adplacr",
+    "code": "adplacr",
+    "label": "Ad Placr",
+    "description": "Places your ad code inside articles, at the paragraph or heading you choose.",
+    "version": "0.1.0",
+    "requires": { "teme": "^0.8" },
+    "plugin": "KraftySprouts\\AdPlacr\\AdPlacr",
+    "capabilities": ["content.insert"],
+    "author": "Krafty Sprouts Media, LLC",
+    "license": "GPL-2.0-or-later"
+}

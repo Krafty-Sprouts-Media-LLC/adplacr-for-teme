@@ -5,9 +5,993 @@
     "label": "Ad Placr",
     "description": "Places your ad code inside articles, at the paragraph or heading you choose.",
     "version": "0.1.0",
-    "requires": { "teme": "^0.8" },
+    "requires": {
+        "teme": "^0.8"
+    },
     "plugin": "KraftySprouts\\AdPlacr\\AdPlacr",
-    "capabilities": ["content.insert"],
+    "capabilities": [
+        "content.insert"
+    ],
     "author": "Krafty Sprouts Media, LLC",
-    "license": "GPL-2.0-or-later"
+    "license": "GPL-2.0-or-later",
+    "contributes": {
+        "settings": [
+            {
+                "key": "mobile_breakpoint",
+                "type": "number",
+                "label": "Mobile breakpoint",
+                "description": "Screens narrower than this many pixels get the mobile ad code. WordPress Ad Placr used 782.",
+                "default": 782,
+                "min": 200,
+                "max": 1024,
+                "unit": "px"
+            },
+            {
+                "key": "tablet_breakpoint",
+                "type": "number",
+                "label": "Tablet breakpoint",
+                "description": "Screens wider than the mobile breakpoint and narrower than this are tablets. Keep it above the mobile value.",
+                "default": 1024,
+                "min": 201,
+                "max": 1600,
+                "unit": "px"
+            },
+            {
+                "key": "analytics_enabled",
+                "type": "boolean",
+                "label": "Count impressions and clicks",
+                "description": "Off by default. When on, the plugin counts how often each ad is seen and clicked, per day. No personal information is kept.",
+                "default": false
+            },
+            {
+                "key": "retention_days",
+                "type": "select",
+                "label": "Keep statistics for",
+                "description": "Daily counts older than this are removed automatically.",
+                "default": "90",
+                "options": {
+                    "30": "30 days",
+                    "60": "60 days",
+                    "90": "90 days",
+                    "180": "180 days",
+                    "365": "365 days"
+                }
+            },
+            {
+                "key": "ad1_name",
+                "type": "text",
+                "label": "Ad 1: name",
+                "description": "A name only you see, so you can tell your ads apart.",
+                "default": "",
+                "maxLength": 80
+            },
+            {
+                "key": "ad1_status",
+                "type": "select",
+                "label": "Ad 1: status",
+                "description": "An ad is shown only while it is Active and has ad code.",
+                "default": "paused",
+                "options": {
+                    "paused": "Paused",
+                    "active": "Active"
+                }
+            },
+            {
+                "key": "ad1_position",
+                "type": "select",
+                "label": "Ad 1: where it appears",
+                "description": "Where in the article the ad is placed. Only paragraphs and headings at the top level of the article count, never ones inside a list, quote or table.",
+                "default": "after_paragraph",
+                "options": {
+                    "after_paragraph": "After paragraph number",
+                    "before_paragraph": "Before paragraph number",
+                    "before_content": "Before the article",
+                    "after_content": "After the article",
+                    "every_paragraphs": "After every few paragraphs",
+                    "before_heading": "Before a heading",
+                    "after_heading": "After a heading",
+                    "near_end": "Near the end (before the last paragraph)"
+                }
+            },
+            {
+                "key": "ad1_paragraph",
+                "type": "number",
+                "label": "Ad 1: paragraph number",
+                "description": "Used by \"After paragraph number\", \"Before paragraph number\" and \"After every few paragraphs\" (then it is the step).",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad1_repeat_max",
+                "type": "number",
+                "label": "Ad 1: most repeats",
+                "description": "Used by \"After every few paragraphs\": the most times the ad is repeated in one article. Teme never repeats more than 10 times.",
+                "default": 3,
+                "min": 1,
+                "max": 10
+            },
+            {
+                "key": "ad1_heading_level",
+                "type": "number",
+                "label": "Ad 1: heading level",
+                "description": "Used by the heading locations: 2 means an h2 heading.",
+                "default": 2,
+                "min": 1,
+                "max": 6
+            },
+            {
+                "key": "ad1_heading_nth",
+                "type": "number",
+                "label": "Ad 1: which heading",
+                "description": "Used by the heading locations: 1 means the first heading of that level.",
+                "default": 1,
+                "min": 1,
+                "max": 50
+            },
+            {
+                "key": "ad1_code",
+                "type": "textarea",
+                "label": "Ad 1: ad code",
+                "description": "The code from your ad network. Scripts that load from a web address and iframes work; scripts written inline in the code are removed by Teme.",
+                "default": ""
+            },
+            {
+                "key": "ad1_mobile_code",
+                "type": "textarea",
+                "label": "Ad 1: mobile ad code",
+                "description": "Optional. Shown instead of the ad code on screens under the mobile breakpoint.",
+                "default": ""
+            },
+            {
+                "key": "ad1_alignment",
+                "type": "select",
+                "label": "Ad 1: alignment",
+                "description": "Where the ad sits in the column. \"None\" leaves the ad code as it is.",
+                "default": "none",
+                "options": {
+                    "none": "None",
+                    "left": "Left",
+                    "center": "Center",
+                    "right": "Right"
+                }
+            },
+            {
+                "key": "ad1_devices",
+                "type": "multiselect",
+                "label": "Ad 1: show on",
+                "description": "The screen sizes the ad is shown on. Choose none to show on all.",
+                "default": [
+                    "desktop",
+                    "tablet",
+                    "mobile"
+                ],
+                "options": {
+                    "desktop": "Desktop",
+                    "tablet": "Tablet",
+                    "mobile": "Mobile"
+                }
+            },
+            {
+                "key": "ad1_types",
+                "type": "text",
+                "label": "Ad 1: content types",
+                "description": "Show only in these content types, separated by commas, such as post, page. Leave empty to show in all.",
+                "default": "",
+                "example": "post, page"
+            },
+            {
+                "key": "ad1_terms",
+                "type": "text",
+                "label": "Ad 1: categories and tags",
+                "description": "Show only in articles that have one of these terms, as taxonomy:id separated by commas. Leave empty to show in all.",
+                "default": "",
+                "example": "category:01H8XYZ, tag:01H8ABC"
+            },
+            {
+                "key": "ad1_languages",
+                "type": "text",
+                "label": "Ad 1: languages",
+                "description": "Show only in articles in these languages, such as en, fr. Leave empty to show in all.",
+                "default": "",
+                "example": "en, fr"
+            },
+            {
+                "key": "ad1_start",
+                "type": "text",
+                "label": "Ad 1: start",
+                "description": "Do not show before this date and time, in the site's time zone. Leave empty to start at once.",
+                "default": "",
+                "example": "2026-12-01 09:00"
+            },
+            {
+                "key": "ad1_end",
+                "type": "text",
+                "label": "Ad 1: end",
+                "description": "Do not show after this date and time, in the site's time zone. Leave empty to never end.",
+                "default": "",
+                "example": "2026-12-31 23:59"
+            },
+            {
+                "key": "ad1_code_b",
+                "type": "textarea",
+                "label": "Ad 1: version B ad code",
+                "description": "Optional. A second version of the ad. Each time the page is drawn, one version is chosen by its weight.",
+                "default": ""
+            },
+            {
+                "key": "ad1_mobile_code_b",
+                "type": "textarea",
+                "label": "Ad 1: version B mobile ad code",
+                "description": "Optional mobile code for version B.",
+                "default": ""
+            },
+            {
+                "key": "ad1_weight_a",
+                "type": "number",
+                "label": "Ad 1: version A weight",
+                "description": "How often version A is chosen. 3 and 1 means 75% and 25%.",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad1_weight_b",
+                "type": "number",
+                "label": "Ad 1: version B weight",
+                "description": "How often version B is chosen.",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad2_name",
+                "type": "text",
+                "label": "Ad 2: name",
+                "description": "A name only you see, so you can tell your ads apart.",
+                "default": "",
+                "maxLength": 80
+            },
+            {
+                "key": "ad2_status",
+                "type": "select",
+                "label": "Ad 2: status",
+                "description": "An ad is shown only while it is Active and has ad code.",
+                "default": "paused",
+                "options": {
+                    "paused": "Paused",
+                    "active": "Active"
+                }
+            },
+            {
+                "key": "ad2_position",
+                "type": "select",
+                "label": "Ad 2: where it appears",
+                "description": "Where in the article the ad is placed. Only paragraphs and headings at the top level of the article count, never ones inside a list, quote or table.",
+                "default": "after_paragraph",
+                "options": {
+                    "after_paragraph": "After paragraph number",
+                    "before_paragraph": "Before paragraph number",
+                    "before_content": "Before the article",
+                    "after_content": "After the article",
+                    "every_paragraphs": "After every few paragraphs",
+                    "before_heading": "Before a heading",
+                    "after_heading": "After a heading",
+                    "near_end": "Near the end (before the last paragraph)"
+                }
+            },
+            {
+                "key": "ad2_paragraph",
+                "type": "number",
+                "label": "Ad 2: paragraph number",
+                "description": "Used by \"After paragraph number\", \"Before paragraph number\" and \"After every few paragraphs\" (then it is the step).",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad2_repeat_max",
+                "type": "number",
+                "label": "Ad 2: most repeats",
+                "description": "Used by \"After every few paragraphs\": the most times the ad is repeated in one article. Teme never repeats more than 10 times.",
+                "default": 3,
+                "min": 1,
+                "max": 10
+            },
+            {
+                "key": "ad2_heading_level",
+                "type": "number",
+                "label": "Ad 2: heading level",
+                "description": "Used by the heading locations: 2 means an h2 heading.",
+                "default": 2,
+                "min": 1,
+                "max": 6
+            },
+            {
+                "key": "ad2_heading_nth",
+                "type": "number",
+                "label": "Ad 2: which heading",
+                "description": "Used by the heading locations: 1 means the first heading of that level.",
+                "default": 1,
+                "min": 1,
+                "max": 50
+            },
+            {
+                "key": "ad2_code",
+                "type": "textarea",
+                "label": "Ad 2: ad code",
+                "description": "The code from your ad network. Scripts that load from a web address and iframes work; scripts written inline in the code are removed by Teme.",
+                "default": ""
+            },
+            {
+                "key": "ad2_mobile_code",
+                "type": "textarea",
+                "label": "Ad 2: mobile ad code",
+                "description": "Optional. Shown instead of the ad code on screens under the mobile breakpoint.",
+                "default": ""
+            },
+            {
+                "key": "ad2_alignment",
+                "type": "select",
+                "label": "Ad 2: alignment",
+                "description": "Where the ad sits in the column. \"None\" leaves the ad code as it is.",
+                "default": "none",
+                "options": {
+                    "none": "None",
+                    "left": "Left",
+                    "center": "Center",
+                    "right": "Right"
+                }
+            },
+            {
+                "key": "ad2_devices",
+                "type": "multiselect",
+                "label": "Ad 2: show on",
+                "description": "The screen sizes the ad is shown on. Choose none to show on all.",
+                "default": [
+                    "desktop",
+                    "tablet",
+                    "mobile"
+                ],
+                "options": {
+                    "desktop": "Desktop",
+                    "tablet": "Tablet",
+                    "mobile": "Mobile"
+                }
+            },
+            {
+                "key": "ad2_types",
+                "type": "text",
+                "label": "Ad 2: content types",
+                "description": "Show only in these content types, separated by commas, such as post, page. Leave empty to show in all.",
+                "default": "",
+                "example": "post, page"
+            },
+            {
+                "key": "ad2_terms",
+                "type": "text",
+                "label": "Ad 2: categories and tags",
+                "description": "Show only in articles that have one of these terms, as taxonomy:id separated by commas. Leave empty to show in all.",
+                "default": "",
+                "example": "category:01H8XYZ, tag:01H8ABC"
+            },
+            {
+                "key": "ad2_languages",
+                "type": "text",
+                "label": "Ad 2: languages",
+                "description": "Show only in articles in these languages, such as en, fr. Leave empty to show in all.",
+                "default": "",
+                "example": "en, fr"
+            },
+            {
+                "key": "ad2_start",
+                "type": "text",
+                "label": "Ad 2: start",
+                "description": "Do not show before this date and time, in the site's time zone. Leave empty to start at once.",
+                "default": "",
+                "example": "2026-12-01 09:00"
+            },
+            {
+                "key": "ad2_end",
+                "type": "text",
+                "label": "Ad 2: end",
+                "description": "Do not show after this date and time, in the site's time zone. Leave empty to never end.",
+                "default": "",
+                "example": "2026-12-31 23:59"
+            },
+            {
+                "key": "ad2_code_b",
+                "type": "textarea",
+                "label": "Ad 2: version B ad code",
+                "description": "Optional. A second version of the ad. Each time the page is drawn, one version is chosen by its weight.",
+                "default": ""
+            },
+            {
+                "key": "ad2_mobile_code_b",
+                "type": "textarea",
+                "label": "Ad 2: version B mobile ad code",
+                "description": "Optional mobile code for version B.",
+                "default": ""
+            },
+            {
+                "key": "ad2_weight_a",
+                "type": "number",
+                "label": "Ad 2: version A weight",
+                "description": "How often version A is chosen. 3 and 1 means 75% and 25%.",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad2_weight_b",
+                "type": "number",
+                "label": "Ad 2: version B weight",
+                "description": "How often version B is chosen.",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad3_name",
+                "type": "text",
+                "label": "Ad 3: name",
+                "description": "A name only you see, so you can tell your ads apart.",
+                "default": "",
+                "maxLength": 80
+            },
+            {
+                "key": "ad3_status",
+                "type": "select",
+                "label": "Ad 3: status",
+                "description": "An ad is shown only while it is Active and has ad code.",
+                "default": "paused",
+                "options": {
+                    "paused": "Paused",
+                    "active": "Active"
+                }
+            },
+            {
+                "key": "ad3_position",
+                "type": "select",
+                "label": "Ad 3: where it appears",
+                "description": "Where in the article the ad is placed. Only paragraphs and headings at the top level of the article count, never ones inside a list, quote or table.",
+                "default": "after_paragraph",
+                "options": {
+                    "after_paragraph": "After paragraph number",
+                    "before_paragraph": "Before paragraph number",
+                    "before_content": "Before the article",
+                    "after_content": "After the article",
+                    "every_paragraphs": "After every few paragraphs",
+                    "before_heading": "Before a heading",
+                    "after_heading": "After a heading",
+                    "near_end": "Near the end (before the last paragraph)"
+                }
+            },
+            {
+                "key": "ad3_paragraph",
+                "type": "number",
+                "label": "Ad 3: paragraph number",
+                "description": "Used by \"After paragraph number\", \"Before paragraph number\" and \"After every few paragraphs\" (then it is the step).",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad3_repeat_max",
+                "type": "number",
+                "label": "Ad 3: most repeats",
+                "description": "Used by \"After every few paragraphs\": the most times the ad is repeated in one article. Teme never repeats more than 10 times.",
+                "default": 3,
+                "min": 1,
+                "max": 10
+            },
+            {
+                "key": "ad3_heading_level",
+                "type": "number",
+                "label": "Ad 3: heading level",
+                "description": "Used by the heading locations: 2 means an h2 heading.",
+                "default": 2,
+                "min": 1,
+                "max": 6
+            },
+            {
+                "key": "ad3_heading_nth",
+                "type": "number",
+                "label": "Ad 3: which heading",
+                "description": "Used by the heading locations: 1 means the first heading of that level.",
+                "default": 1,
+                "min": 1,
+                "max": 50
+            },
+            {
+                "key": "ad3_code",
+                "type": "textarea",
+                "label": "Ad 3: ad code",
+                "description": "The code from your ad network. Scripts that load from a web address and iframes work; scripts written inline in the code are removed by Teme.",
+                "default": ""
+            },
+            {
+                "key": "ad3_mobile_code",
+                "type": "textarea",
+                "label": "Ad 3: mobile ad code",
+                "description": "Optional. Shown instead of the ad code on screens under the mobile breakpoint.",
+                "default": ""
+            },
+            {
+                "key": "ad3_alignment",
+                "type": "select",
+                "label": "Ad 3: alignment",
+                "description": "Where the ad sits in the column. \"None\" leaves the ad code as it is.",
+                "default": "none",
+                "options": {
+                    "none": "None",
+                    "left": "Left",
+                    "center": "Center",
+                    "right": "Right"
+                }
+            },
+            {
+                "key": "ad3_devices",
+                "type": "multiselect",
+                "label": "Ad 3: show on",
+                "description": "The screen sizes the ad is shown on. Choose none to show on all.",
+                "default": [
+                    "desktop",
+                    "tablet",
+                    "mobile"
+                ],
+                "options": {
+                    "desktop": "Desktop",
+                    "tablet": "Tablet",
+                    "mobile": "Mobile"
+                }
+            },
+            {
+                "key": "ad3_types",
+                "type": "text",
+                "label": "Ad 3: content types",
+                "description": "Show only in these content types, separated by commas, such as post, page. Leave empty to show in all.",
+                "default": "",
+                "example": "post, page"
+            },
+            {
+                "key": "ad3_terms",
+                "type": "text",
+                "label": "Ad 3: categories and tags",
+                "description": "Show only in articles that have one of these terms, as taxonomy:id separated by commas. Leave empty to show in all.",
+                "default": "",
+                "example": "category:01H8XYZ, tag:01H8ABC"
+            },
+            {
+                "key": "ad3_languages",
+                "type": "text",
+                "label": "Ad 3: languages",
+                "description": "Show only in articles in these languages, such as en, fr. Leave empty to show in all.",
+                "default": "",
+                "example": "en, fr"
+            },
+            {
+                "key": "ad3_start",
+                "type": "text",
+                "label": "Ad 3: start",
+                "description": "Do not show before this date and time, in the site's time zone. Leave empty to start at once.",
+                "default": "",
+                "example": "2026-12-01 09:00"
+            },
+            {
+                "key": "ad3_end",
+                "type": "text",
+                "label": "Ad 3: end",
+                "description": "Do not show after this date and time, in the site's time zone. Leave empty to never end.",
+                "default": "",
+                "example": "2026-12-31 23:59"
+            },
+            {
+                "key": "ad3_code_b",
+                "type": "textarea",
+                "label": "Ad 3: version B ad code",
+                "description": "Optional. A second version of the ad. Each time the page is drawn, one version is chosen by its weight.",
+                "default": ""
+            },
+            {
+                "key": "ad3_mobile_code_b",
+                "type": "textarea",
+                "label": "Ad 3: version B mobile ad code",
+                "description": "Optional mobile code for version B.",
+                "default": ""
+            },
+            {
+                "key": "ad3_weight_a",
+                "type": "number",
+                "label": "Ad 3: version A weight",
+                "description": "How often version A is chosen. 3 and 1 means 75% and 25%.",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad3_weight_b",
+                "type": "number",
+                "label": "Ad 3: version B weight",
+                "description": "How often version B is chosen.",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad4_name",
+                "type": "text",
+                "label": "Ad 4: name",
+                "description": "A name only you see, so you can tell your ads apart.",
+                "default": "",
+                "maxLength": 80
+            },
+            {
+                "key": "ad4_status",
+                "type": "select",
+                "label": "Ad 4: status",
+                "description": "An ad is shown only while it is Active and has ad code.",
+                "default": "paused",
+                "options": {
+                    "paused": "Paused",
+                    "active": "Active"
+                }
+            },
+            {
+                "key": "ad4_position",
+                "type": "select",
+                "label": "Ad 4: where it appears",
+                "description": "Where in the article the ad is placed. Only paragraphs and headings at the top level of the article count, never ones inside a list, quote or table.",
+                "default": "after_paragraph",
+                "options": {
+                    "after_paragraph": "After paragraph number",
+                    "before_paragraph": "Before paragraph number",
+                    "before_content": "Before the article",
+                    "after_content": "After the article",
+                    "every_paragraphs": "After every few paragraphs",
+                    "before_heading": "Before a heading",
+                    "after_heading": "After a heading",
+                    "near_end": "Near the end (before the last paragraph)"
+                }
+            },
+            {
+                "key": "ad4_paragraph",
+                "type": "number",
+                "label": "Ad 4: paragraph number",
+                "description": "Used by \"After paragraph number\", \"Before paragraph number\" and \"After every few paragraphs\" (then it is the step).",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad4_repeat_max",
+                "type": "number",
+                "label": "Ad 4: most repeats",
+                "description": "Used by \"After every few paragraphs\": the most times the ad is repeated in one article. Teme never repeats more than 10 times.",
+                "default": 3,
+                "min": 1,
+                "max": 10
+            },
+            {
+                "key": "ad4_heading_level",
+                "type": "number",
+                "label": "Ad 4: heading level",
+                "description": "Used by the heading locations: 2 means an h2 heading.",
+                "default": 2,
+                "min": 1,
+                "max": 6
+            },
+            {
+                "key": "ad4_heading_nth",
+                "type": "number",
+                "label": "Ad 4: which heading",
+                "description": "Used by the heading locations: 1 means the first heading of that level.",
+                "default": 1,
+                "min": 1,
+                "max": 50
+            },
+            {
+                "key": "ad4_code",
+                "type": "textarea",
+                "label": "Ad 4: ad code",
+                "description": "The code from your ad network. Scripts that load from a web address and iframes work; scripts written inline in the code are removed by Teme.",
+                "default": ""
+            },
+            {
+                "key": "ad4_mobile_code",
+                "type": "textarea",
+                "label": "Ad 4: mobile ad code",
+                "description": "Optional. Shown instead of the ad code on screens under the mobile breakpoint.",
+                "default": ""
+            },
+            {
+                "key": "ad4_alignment",
+                "type": "select",
+                "label": "Ad 4: alignment",
+                "description": "Where the ad sits in the column. \"None\" leaves the ad code as it is.",
+                "default": "none",
+                "options": {
+                    "none": "None",
+                    "left": "Left",
+                    "center": "Center",
+                    "right": "Right"
+                }
+            },
+            {
+                "key": "ad4_devices",
+                "type": "multiselect",
+                "label": "Ad 4: show on",
+                "description": "The screen sizes the ad is shown on. Choose none to show on all.",
+                "default": [
+                    "desktop",
+                    "tablet",
+                    "mobile"
+                ],
+                "options": {
+                    "desktop": "Desktop",
+                    "tablet": "Tablet",
+                    "mobile": "Mobile"
+                }
+            },
+            {
+                "key": "ad4_types",
+                "type": "text",
+                "label": "Ad 4: content types",
+                "description": "Show only in these content types, separated by commas, such as post, page. Leave empty to show in all.",
+                "default": "",
+                "example": "post, page"
+            },
+            {
+                "key": "ad4_terms",
+                "type": "text",
+                "label": "Ad 4: categories and tags",
+                "description": "Show only in articles that have one of these terms, as taxonomy:id separated by commas. Leave empty to show in all.",
+                "default": "",
+                "example": "category:01H8XYZ, tag:01H8ABC"
+            },
+            {
+                "key": "ad4_languages",
+                "type": "text",
+                "label": "Ad 4: languages",
+                "description": "Show only in articles in these languages, such as en, fr. Leave empty to show in all.",
+                "default": "",
+                "example": "en, fr"
+            },
+            {
+                "key": "ad4_start",
+                "type": "text",
+                "label": "Ad 4: start",
+                "description": "Do not show before this date and time, in the site's time zone. Leave empty to start at once.",
+                "default": "",
+                "example": "2026-12-01 09:00"
+            },
+            {
+                "key": "ad4_end",
+                "type": "text",
+                "label": "Ad 4: end",
+                "description": "Do not show after this date and time, in the site's time zone. Leave empty to never end.",
+                "default": "",
+                "example": "2026-12-31 23:59"
+            },
+            {
+                "key": "ad4_code_b",
+                "type": "textarea",
+                "label": "Ad 4: version B ad code",
+                "description": "Optional. A second version of the ad. Each time the page is drawn, one version is chosen by its weight.",
+                "default": ""
+            },
+            {
+                "key": "ad4_mobile_code_b",
+                "type": "textarea",
+                "label": "Ad 4: version B mobile ad code",
+                "description": "Optional mobile code for version B.",
+                "default": ""
+            },
+            {
+                "key": "ad4_weight_a",
+                "type": "number",
+                "label": "Ad 4: version A weight",
+                "description": "How often version A is chosen. 3 and 1 means 75% and 25%.",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad4_weight_b",
+                "type": "number",
+                "label": "Ad 4: version B weight",
+                "description": "How often version B is chosen.",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad5_name",
+                "type": "text",
+                "label": "Ad 5: name",
+                "description": "A name only you see, so you can tell your ads apart.",
+                "default": "",
+                "maxLength": 80
+            },
+            {
+                "key": "ad5_status",
+                "type": "select",
+                "label": "Ad 5: status",
+                "description": "An ad is shown only while it is Active and has ad code.",
+                "default": "paused",
+                "options": {
+                    "paused": "Paused",
+                    "active": "Active"
+                }
+            },
+            {
+                "key": "ad5_position",
+                "type": "select",
+                "label": "Ad 5: where it appears",
+                "description": "Where in the article the ad is placed. Only paragraphs and headings at the top level of the article count, never ones inside a list, quote or table.",
+                "default": "after_paragraph",
+                "options": {
+                    "after_paragraph": "After paragraph number",
+                    "before_paragraph": "Before paragraph number",
+                    "before_content": "Before the article",
+                    "after_content": "After the article",
+                    "every_paragraphs": "After every few paragraphs",
+                    "before_heading": "Before a heading",
+                    "after_heading": "After a heading",
+                    "near_end": "Near the end (before the last paragraph)"
+                }
+            },
+            {
+                "key": "ad5_paragraph",
+                "type": "number",
+                "label": "Ad 5: paragraph number",
+                "description": "Used by \"After paragraph number\", \"Before paragraph number\" and \"After every few paragraphs\" (then it is the step).",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad5_repeat_max",
+                "type": "number",
+                "label": "Ad 5: most repeats",
+                "description": "Used by \"After every few paragraphs\": the most times the ad is repeated in one article. Teme never repeats more than 10 times.",
+                "default": 3,
+                "min": 1,
+                "max": 10
+            },
+            {
+                "key": "ad5_heading_level",
+                "type": "number",
+                "label": "Ad 5: heading level",
+                "description": "Used by the heading locations: 2 means an h2 heading.",
+                "default": 2,
+                "min": 1,
+                "max": 6
+            },
+            {
+                "key": "ad5_heading_nth",
+                "type": "number",
+                "label": "Ad 5: which heading",
+                "description": "Used by the heading locations: 1 means the first heading of that level.",
+                "default": 1,
+                "min": 1,
+                "max": 50
+            },
+            {
+                "key": "ad5_code",
+                "type": "textarea",
+                "label": "Ad 5: ad code",
+                "description": "The code from your ad network. Scripts that load from a web address and iframes work; scripts written inline in the code are removed by Teme.",
+                "default": ""
+            },
+            {
+                "key": "ad5_mobile_code",
+                "type": "textarea",
+                "label": "Ad 5: mobile ad code",
+                "description": "Optional. Shown instead of the ad code on screens under the mobile breakpoint.",
+                "default": ""
+            },
+            {
+                "key": "ad5_alignment",
+                "type": "select",
+                "label": "Ad 5: alignment",
+                "description": "Where the ad sits in the column. \"None\" leaves the ad code as it is.",
+                "default": "none",
+                "options": {
+                    "none": "None",
+                    "left": "Left",
+                    "center": "Center",
+                    "right": "Right"
+                }
+            },
+            {
+                "key": "ad5_devices",
+                "type": "multiselect",
+                "label": "Ad 5: show on",
+                "description": "The screen sizes the ad is shown on. Choose none to show on all.",
+                "default": [
+                    "desktop",
+                    "tablet",
+                    "mobile"
+                ],
+                "options": {
+                    "desktop": "Desktop",
+                    "tablet": "Tablet",
+                    "mobile": "Mobile"
+                }
+            },
+            {
+                "key": "ad5_types",
+                "type": "text",
+                "label": "Ad 5: content types",
+                "description": "Show only in these content types, separated by commas, such as post, page. Leave empty to show in all.",
+                "default": "",
+                "example": "post, page"
+            },
+            {
+                "key": "ad5_terms",
+                "type": "text",
+                "label": "Ad 5: categories and tags",
+                "description": "Show only in articles that have one of these terms, as taxonomy:id separated by commas. Leave empty to show in all.",
+                "default": "",
+                "example": "category:01H8XYZ, tag:01H8ABC"
+            },
+            {
+                "key": "ad5_languages",
+                "type": "text",
+                "label": "Ad 5: languages",
+                "description": "Show only in articles in these languages, such as en, fr. Leave empty to show in all.",
+                "default": "",
+                "example": "en, fr"
+            },
+            {
+                "key": "ad5_start",
+                "type": "text",
+                "label": "Ad 5: start",
+                "description": "Do not show before this date and time, in the site's time zone. Leave empty to start at once.",
+                "default": "",
+                "example": "2026-12-01 09:00"
+            },
+            {
+                "key": "ad5_end",
+                "type": "text",
+                "label": "Ad 5: end",
+                "description": "Do not show after this date and time, in the site's time zone. Leave empty to never end.",
+                "default": "",
+                "example": "2026-12-31 23:59"
+            },
+            {
+                "key": "ad5_code_b",
+                "type": "textarea",
+                "label": "Ad 5: version B ad code",
+                "description": "Optional. A second version of the ad. Each time the page is drawn, one version is chosen by its weight.",
+                "default": ""
+            },
+            {
+                "key": "ad5_mobile_code_b",
+                "type": "textarea",
+                "label": "Ad 5: version B mobile ad code",
+                "description": "Optional mobile code for version B.",
+                "default": ""
+            },
+            {
+                "key": "ad5_weight_a",
+                "type": "number",
+                "label": "Ad 5: version A weight",
+                "description": "How often version A is chosen. 3 and 1 means 75% and 25%.",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            },
+            {
+                "key": "ad5_weight_b",
+                "type": "number",
+                "label": "Ad 5: version B weight",
+                "description": "How often version B is chosen.",
+                "default": 1,
+                "min": 1,
+                "max": 100
+            }
+        ]
+    }
 }

@@ -8,6 +8,7 @@ use Teme\Contracts\Insertions\Position;
 
 /**
  * @param  array<string, mixed>  $values
+ *
  * @return list<Insertion>
  */
 function placed(array $values, ?Closure $roll = null, string $type = 'post'): array

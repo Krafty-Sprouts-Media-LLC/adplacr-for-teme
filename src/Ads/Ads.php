@@ -21,6 +21,7 @@ final class Ads
 
     /**
      * @param  array<string, mixed>  $values  the group's values, as SettingsReader::group() answers
+     *
      * @return list<Ad> in slot order
      */
     public static function fromSettings(array $values, DateTimeZone $siteZone): array
@@ -76,6 +77,7 @@ final class Ads
 
     /**
      * @param  callable(string): mixed  $get
+     *
      * @return list<Version>
      */
     private static function versions(int $n, callable $get): array

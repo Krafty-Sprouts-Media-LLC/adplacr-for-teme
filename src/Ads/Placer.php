@@ -23,6 +23,7 @@ final class Placer
      * @param  array<string, mixed>  $values  the plugin's settings group
      * @param  int  $now  Unix time, for the schedule
      * @param  Closure(int): int|null  $roll  see Chooser::choose()
+     *
      * @return list<Insertion> in slot order
      */
     public static function insertionsFor(array $values, DateTimeZone $siteZone, ArticleFacts $article, int $now, ?Closure $roll = null): array

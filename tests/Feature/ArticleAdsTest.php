@@ -21,7 +21,6 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Testing\TestResponse;
-use Tests\Fixtures\Plugins\PluginFixtures;
 use Tests\TestCase;
 
 uses(TestCase::class, RefreshDatabase::class);
@@ -47,7 +46,6 @@ beforeEach(function (): void {
     $this->editor = User::factory()->create()->assignRole('editor');
     $this->admin = User::factory()->create()->assignRole('administrator');
 });
-
 
 /**
  * Saves the plugin's settings the way the admin does, through Teme's own Operation.

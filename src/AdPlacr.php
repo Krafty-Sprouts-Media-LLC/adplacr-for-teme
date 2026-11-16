@@ -8,12 +8,12 @@ use DateTimeZone;
 use KraftySprouts\AdPlacr\Ads\Placer;
 use KraftySprouts\AdPlacr\Stats\LiveAds;
 use KraftySprouts\AdPlacr\Stats\PruneHandler;
-use Teme\Contracts\Settings\SettingsChanged;
 use Teme\Contracts\Hooks\Hooks;
 use Teme\Contracts\Insertions\ArticleFacts;
 use Teme\Contracts\Insertions\InsertionContributor;
 use Teme\Contracts\Jobs\PluginHasJobs;
 use Teme\Contracts\Plugins\Plugin;
+use Teme\Contracts\Settings\SettingsChanged;
 use Teme\Contracts\Settings\SettingsReader;
 use Throwable;
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace KraftySprouts\AdPlacr\Ads;
 
+use InvalidArgumentException;
 use Teme\Contracts\Insertions\Position;
 
 /**
@@ -23,6 +24,8 @@ final class Placement
             'before_heading' => Position::beforeHeading($ad->headingLevel, $ad->headingNth),
             'after_heading' => Position::afterHeading($ad->headingLevel, $ad->headingNth),
             'near_end' => Position::nearEnd(),
+            // Ads::fromSettings() never builds an ad with another location; this is for a caller that does.
+            default => throw new InvalidArgumentException("Ad Placr has no Teme position for the location [{$ad->position}]."),
         };
     }
 }

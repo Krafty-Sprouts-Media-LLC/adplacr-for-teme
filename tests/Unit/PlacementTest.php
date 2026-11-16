@@ -5,6 +5,7 @@ declare(strict_types=1);
 use KraftySprouts\AdPlacr\Ads\Ad;
 use KraftySprouts\AdPlacr\Ads\Ads;
 use KraftySprouts\AdPlacr\Ads\Placement;
+use KraftySprouts\AdPlacr\Settings\Declaration;
 use Teme\Contracts\Insertions\Position;
 
 /**
@@ -62,7 +63,14 @@ it('places an ad near the end of the article', function (): void {
 });
 
 it('has a Teme position for every location the settings offer', function (): void {
-    foreach (array_keys(\KraftySprouts\AdPlacr\Settings\Declaration::POSITIONS) as $key) {
+    foreach (array_keys(Declaration::POSITIONS) as $key) {
         expect(positionFor(['position' => $key]))->toBeInstanceOf(Position::class);
     }
+});
+
+it('refuses, with a clear message, an ad whose location it does not know', function (): void {
+    $known = adWith([]);
+    $odd = new Ad($known->slot, $known->name, 'sticky_footer', 1, 3, 2, 1, $known->versions, 'none', $known->devices, [], [], [], null, null);
+
+    expect(fn () => Placement::for($odd))->toThrow(InvalidArgumentException::class, 'sticky_footer');
 });

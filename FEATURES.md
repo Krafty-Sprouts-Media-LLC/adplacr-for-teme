@@ -93,7 +93,7 @@ Teme version this was written against: 0.8.0-alpha.1 (the contracts carry `@sinc
 | D4 | Ad code echoed raw (documented exception) | different | Teme cleans every insertion after the plugin hands it over, so the plugin never echoes anything. |
 | D5 | Several ads at one location in menu order, then ID | same | Slot number order. |
 | D6 | Main query only, not feeds, not admin | same | Teme draws insertions only on the public page of a published article. Previews, feeds, Markdown and the API never carry them. |
-| D7 | Page cache safe (no user-agent logic) | same | Same CSS-only design. Teme purges pages when a plugin is enabled or disabled; see FINDINGS F-10 for saved changes. |
+| D7 | Page cache safe (no user-agent logic) | same | Same CSS-only design. Teme purges cached article pages when the plugin is enabled, disabled, or its settings are saved (checked: FINDINGS F-10). As in WordPress, a cached page keeps the version it drew, so A/B choice changes when the page is next drawn, not per visitor. |
 
 ## Statistics
 

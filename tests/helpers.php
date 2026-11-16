@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use KraftySprouts\AdPlacr\Ads\Ad;
 use KraftySprouts\AdPlacr\Ads\Ads;
 use KraftySprouts\AdPlacr\Settings\Declaration;
+use Teme\Contracts\Insertions\ArticleFacts;
 
 /**
  * Test helpers, loaded by tests/bootstrap.php. They live here, not in a Pest.php, because Pest reads
@@ -24,6 +26,7 @@ function savedDefaults(): array
  * The settings with slot 1 Active, carrying some code, and these fields of it replaced.
  *
  * @param  array<string, mixed>  $over  field name without the `ad1_` prefix => value
+ *
  * @return array<string, mixed>
  */
 function slot1(array $over = []): array
@@ -42,14 +45,15 @@ function slot1(array $over = []): array
  *
  * @param  array<string, list<string>>  $terms  term ids by taxonomy
  */
-function article(string $type = 'post', string $language = 'en', array $terms = [], int $paragraphs = 8): \Teme\Contracts\Insertions\ArticleFacts
+function article(string $type = 'post', string $language = 'en', array $terms = [], int $paragraphs = 8): ArticleFacts
 {
-    return new \Teme\Contracts\Insertions\ArticleFacts('01ARTICLE', $type, $terms, $language, ['u1'], 400, $paragraphs);
+    return new ArticleFacts('01ARTICLE', $type, $terms, $language, ['u1'], 400, $paragraphs);
 }
 
 /**
  * @param  array<string, mixed>  $values
- * @return list<\KraftySprouts\AdPlacr\Ads\Ad>
+ *
+ * @return list<Ad>
  */
 function loadAds(array $values): array
 {

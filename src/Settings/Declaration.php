@@ -125,6 +125,7 @@ final class Declaration
 
     /**
      * @param  array<string, mixed>  $more
+     *
      * @return array<string, mixed>
      */
     private static function setting(string $key, string $type, string $label, string $description, array $more = []): array

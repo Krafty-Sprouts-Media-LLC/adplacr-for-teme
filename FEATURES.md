@@ -42,7 +42,7 @@ Teme version this was written against: 0.8.0-alpha.1 (the contracts carry `@sinc
 | A5 | Optional mobile ad code | same | `mobile_code` textarea; shown only at or under the mobile breakpoint, by CSS. |
 | A6 | Several weighted ad versions (rotation / A/B) | different | Two versions per slot (A and B), each with a weight. WordPress allows any number. |
 | A7 | Per-version name and enabled flag | different | Version B is on when it has code; no separate name. |
-| A8 | Stable version IDs for statistics | same | `a1`, `b1`: slot, then version letter. |
+| A8 | Stable version IDs for statistics | same | `1a`, `1b`: the slot number, then the version letter. |
 | A9 | Alignment (none, left, center, right) for in-content positions | same | Select per slot; wrapper CSS. |
 | A10 | Private admin notes | different | The `name` field and each setting's description cover it; no notes box. |
 | A11 | Duplicate ad, row actions, Activate/Pause, bulk actions | can't yet | An admin list or row-action socket. |

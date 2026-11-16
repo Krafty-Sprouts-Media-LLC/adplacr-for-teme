@@ -26,7 +26,7 @@ Teme version this was written against: 0.8.0-alpha.1 (the contracts carry `@sinc
 | S2 | Tablet breakpoint (px, above mobile, to 1600, default 1024) | same | Number setting `tablet_breakpoint`; kept above the mobile value in code. |
 | S3 | Statistics on/off ("analytics_enabled") | same | Boolean setting `analytics_enabled`, off by default, as in WordPress. |
 | S4 | Retention days (30, 60, 90, 180, 365) | same | Select setting `retention_days`; a scheduled job prunes. |
-| S5 | Settings screen under the Ads menu | different | Teme draws the screen from the manifest: **Settings › Plugin settings › Ad Placr**, plus a link in Tools. A plugin cannot draw its own admin page. |
+| S5 | Settings screen under the Ads menu | different | Teme draws the screen from the manifest: **Settings › Plugin settings › Ad Placr** (checked in the admin: all 105 fields appear, as one flat list; FINDINGS F-17), plus a Tools link declared in the manifest. A plugin cannot draw its own admin page. |
 | S6 | System status card (events stored, next cleanup) | can't yet | A read-only value or admin-page socket for plugins. Settings are inputs only. |
 | S7 | Settings removed on uninstall (`uninstall.php`) | different | Teme keeps a plugin's saved values when it is disabled; `teme:plugins:remove-data` removes its tables. No uninstall hook for settings. |
 | S8 | Filter `ad_placr_mobile_breakpoint`, `ad_placr_tablet_breakpoint`, `ad_placr_analytics_retention_days` | can't yet | Plugins cannot publish hooks of their own for other plugins to use. |
@@ -101,9 +101,9 @@ Teme version this was written against: 0.8.0-alpha.1 (the contracts carry `@sinc
 |---|---|---|---|
 | T1 | Impression on 50% visible, one per element | same | Small script served by the plugin, `adplacr-tracking.js`. |
 | T2 | Click on the ad, one per element | same | Same script. |
-| T3 | Storage in a table, opt-in, no personal data | different | Daily counters per slot and version in the plugin's own table `adplacr_daily` (no per-event rows, no IP, no browser details). |
-| T4 | Daily retention cleanup (cron) | same | Declared job and daily schedule. |
-| T5 | REST route `ad-placr/v1/track`, nonce-checked | different | Teme public route `POST /adplacr/track`, checked by a custom verifier and throttled. No nonce exists for visitors. |
+| T3 | Storage in a table, opt-in, no personal data | different | Daily counters per slot and version in the plugin's own table `adplacr_daily` (no per-event rows, no IP, no browser details). A second small table, `adplacr_live`, lists which versions may be counted, because a public route cannot read the plugin's settings (FINDINGS F-16). |
+| T4 | Daily retention cleanup (cron) | same | Declared job and daily schedule. The handler is tested; I could not make Teme's schedule runner fire it in a test (FINDINGS F-19). |
+| T5 | REST route `ad-placr/v1/track`, nonce-checked | different | Teme public route `POST /adplacr/track`: needs the plugin's own request header (so another site's page cannot post to it), a body of at most 2 KB, and a declared throttle of 120 (its unit is Teme's; not tested here, and the handbook does not say). Counts only ad versions that exist and are Active. Teme requires a secret setting behind it (`tracking_key`, unused; FINDINGS F-15). |
 | T6 | Actions `ad_placr_impression` / `ad_placr_click` for other trackers | can't yet | Plugins cannot publish hooks (S8). |
 | T7 | Dashboard with 7/30/90-day ranges, top ads | can't yet | Admin page socket (S6). The numbers are stored; nothing shows them yet. |
 | T8 | Per-ad statistics box on the editor | can't yet | Same. |

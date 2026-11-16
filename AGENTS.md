@@ -21,6 +21,13 @@ docker compose -f dev/docker-compose.yml up -d
 powershell -File dev\test.ps1
 ```
 
+Formatting and static analysis, with the site's own tools:
+
+```powershell
+..\teme-dev\vendor\bin\pint.bat --config ..\teme-dev\pint.json src tests build database
+..\teme-dev\vendor\bin\phpstan.bat analyse src --level=6 -a ..\teme-dev\vendor\autoload.php
+```
+
 ## Read first
 
 - [Your first plugin](../teme-dev/docs/guides/developers/start/first-plugin.md) and [Hooks](../teme-dev/docs/guides/developers/concepts/hooks.md) in the Teme handbook.

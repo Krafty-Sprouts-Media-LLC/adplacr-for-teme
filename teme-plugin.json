@@ -10,7 +10,9 @@
     },
     "plugin": "KraftySprouts\\AdPlacr\\AdPlacr",
     "capabilities": [
-        "content.insert"
+        "content.insert",
+        "routes.public",
+        "jobs"
     ],
     "author": "Krafty Sprouts Media, LLC",
     "license": "GPL-2.0-or-later",
@@ -56,6 +58,12 @@
                     "180": "180 days",
                     "365": "365 days"
                 }
+            },
+            {
+                "key": "tracking_key",
+                "type": "secret",
+                "label": "Statistics key",
+                "description": "Teme requires a key behind every public address that receives data. Ad Placr does not use its value; you can leave it empty."
             },
             {
                 "key": "ad1_name",
@@ -992,6 +1000,64 @@
                 "min": 1,
                 "max": 100
             }
+        ],
+        "admin": [
+            {
+                "surface": "tools",
+                "id": "adplacr",
+                "label": "Ad Placr",
+                "description": "Set up the ads Ad Placr places in your articles.",
+                "icon": "chart-line",
+                "to": "settings"
+            }
         ]
-    }
+    },
+    "routes": [
+        {
+            "id": "track",
+            "method": "POST",
+            "path": "/{code}/track",
+            "handler": "KraftySprouts\\AdPlacr\\Stats\\TrackRoute",
+            "verify": {
+                "kind": "custom",
+                "class": "KraftySprouts\\AdPlacr\\Stats\\BeaconCheck",
+                "secret": "tracking_key"
+            },
+            "maxBody": 2048,
+            "throttle": 120
+        },
+        {
+            "id": "script",
+            "method": "GET",
+            "path": "/{code}/tracking.js",
+            "handler": "KraftySprouts\\AdPlacr\\Stats\\TrackingScript",
+            "cache": {
+                "query": [],
+                "varyAccept": false,
+                "lifetime": 3600
+            }
+        }
+    ],
+    "jobs": [
+        {
+            "key": "prune",
+            "label": "Remove old ad statistics",
+            "tries": 1
+        }
+    ],
+    "schedules": [
+        {
+            "job": "prune",
+            "every": "day"
+        }
+    ],
+    "owns": {
+        "tables": [
+            "adplacr_daily",
+            "adplacr_live"
+        ]
+    },
+    "hooks": [
+        "SettingsChanged"
+    ]
 }

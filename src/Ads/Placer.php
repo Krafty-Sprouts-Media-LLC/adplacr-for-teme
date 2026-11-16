@@ -32,17 +32,21 @@ final class Placer
             self::breakpoint($values['tablet_breakpoint'] ?? null, self::DEFAULT_TABLET),
         );
         $insertions = [];
+        $counting = ($values['analytics_enabled'] ?? false) === true;
 
         foreach (Ads::fromSettings($values, $siteZone) as $ad) {
             if (! Targeting::matches($ad, $article, $now)) {
                 continue;
             }
 
-            $insertions[] = new Insertion(
-                'adplacr.ad-'.$ad->slot,
-                Placement::for($ad),
-                $renderer->render($ad, Chooser::choose($ad, $roll)),
-            );
+            $html = $renderer->render($ad, Chooser::choose($ad, $roll));
+
+            // The reporting script goes in with the first ad only, so a page with several ads loads it once.
+            if ($counting && $insertions === []) {
+                $html .= '<script src="/adplacr/tracking.js" defer></script>';
+            }
+
+            $insertions[] = new Insertion('adplacr.ad-'.$ad->slot, Placement::for($ad), $html);
         }
 
         return $insertions;

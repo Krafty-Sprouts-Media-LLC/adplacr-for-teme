@@ -14,6 +14,9 @@ final class Declaration
     /** How many ad slots the settings screen offers (DECISIONS D-05). */
     public const int SLOTS = 5;
 
+    /** The secret setting the statistics address names as its verification secret (FINDINGS F-15). */
+    public const string TRACKING_KEY = 'tracking_key';
+
     /** Position choices, by the value stored; the first is the default. */
     public const array POSITIONS = [
         'after_paragraph' => 'After paragraph number',
@@ -45,6 +48,7 @@ final class Declaration
                 'default' => '90',
                 'options' => ['30' => '30 days', '60' => '60 days', '90' => '90 days', '180' => '180 days', '365' => '365 days'],
             ]),
+            self::setting(self::TRACKING_KEY, 'secret', 'Statistics key', 'Teme requires a key behind every public address that receives data. Ad Placr does not use its value; you can leave it empty.', []),
         ];
 
         for ($n = 1; $n <= self::SLOTS; $n++) {

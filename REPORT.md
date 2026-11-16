@@ -5,7 +5,7 @@ The WordPress plugin was only read. Nothing in teme-dev's code was changed (`git
 
 ## What works
 
-All of this runs on the teme-dev site and is covered by tests, and the first four were also seen working in the browser pane.
+All of this is covered by tests against the real Teme code. I also watched four things work in the browser pane on the teme-dev site: ads placed in an article, the desktop-to-mobile code swap at 375 px, impressions and a click being counted, and the settings screen. A/B choice, device hiding, the display rules and alignment were tested but not looked at in a browser.
 
 - **Ads inside articles.** Up to five ad slots, each Paused or Active, placed after paragraph N, before paragraph N, before or after the article, every few paragraphs (up to 10 times), before or after the Nth heading of a level, or near the end. The last four are new; WordPress Ad Placr only had paragraph and article locations here.
 - **Mobile code, device choice, alignment.** Desktop and mobile code swap by screen width with CSS (checked at 375 px). Hiding on tablet, mobile or desktop, and left, center or right alignment, use the same media-query approach, so a cached page is right for every visitor.
@@ -47,7 +47,7 @@ The site is at `C:\Users\kings\Downloads\Projects\teme-plugins\teme-dev` and alr
    docker compose -f dev/docker-compose.yml up -d
    ```
 2. Serve the site: `powershell -File dev\serve.ps1`, then open http://127.0.0.1:8099/.
-3. Sign in at `/admin/login` as `admin@example.test`. That account was made for testing with a throwaway password; to set a new one, use "Forgot your password" or the account's profile after a reset from the console.
+3. Sign in at `/admin/login`. For a test administrator with a fresh throwaway password, run `php dev/reset-test-admin.php` and use what it prints.
 4. Open **Settings › Plugin settings › Ad Placr**, set an ad to Active, paste some code, save, and open `/probe-article/` (a six-paragraph demo article).
 5. Run the tests: `powershell -File dev\test.ps1`.
 

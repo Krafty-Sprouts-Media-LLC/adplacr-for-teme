@@ -38,6 +38,16 @@ function slot1(array $over = []): array
 }
 
 /**
+ * What Teme tells a contributor about an article.
+ *
+ * @param  array<string, list<string>>  $terms  term ids by taxonomy
+ */
+function article(string $type = 'post', string $language = 'en', array $terms = [], int $paragraphs = 8): \Teme\Contracts\Insertions\ArticleFacts
+{
+    return new \Teme\Contracts\Insertions\ArticleFacts('01ARTICLE', $type, $terms, $language, ['u1'], 400, $paragraphs);
+}
+
+/**
  * @param  array<string, mixed>  $values
  * @return list<\KraftySprouts\AdPlacr\Ads\Ad>
  */

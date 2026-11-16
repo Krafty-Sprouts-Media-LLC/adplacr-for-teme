@@ -6,13 +6,10 @@ use KraftySprouts\AdPlacr\Ads\Targeting;
 use Teme\Contracts\Insertions\ArticleFacts;
 
 /**
- * @param  array<string, list<string>>  $terms
+ * Whether slot 1, with these rules, shows in the article at that time.
+ *
+ * @param  array<string, mixed>  $rules
  */
-function article(string $type = 'post', string $language = 'en', array $terms = [], int $paragraphs = 8): ArticleFacts
-{
-    return new ArticleFacts('01ARTICLE', $type, $terms, $language, ['u1'], 400, $paragraphs);
-}
-
 function shows(array $rules, ?ArticleFacts $article = null, int $now = 1_800_000_000): bool
 {
     return Targeting::matches(loadAds(slot1($rules))[0], $article ?? article(), $now);

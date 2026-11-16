@@ -23,3 +23,5 @@ spl_autoload_register(static function (string $class): void {
         require_once $file;
     }
 });
+
+require __DIR__.'/helpers.php';

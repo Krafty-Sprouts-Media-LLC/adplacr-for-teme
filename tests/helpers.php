@@ -4,13 +4,11 @@ declare(strict_types=1);
 
 use KraftySprouts\AdPlacr\Ads\Ads;
 use KraftySprouts\AdPlacr\Settings\Declaration;
-use Tests\TestCase;
 
-/*
- * Unit tests are plain PHP and need no Teme. Feature tests boot the teme-dev site through
- * Teme's own TestCase, as the handbook's example test does.
+/**
+ * Test helpers, loaded by tests/bootstrap.php. They live here, not in a Pest.php, because Pest reads
+ * the Pest.php of the site it runs from (teme-dev), never one in a plugin (FINDINGS F-12).
  */
-pest()->extend(TestCase::class)->in('Feature');
 
 /**
  * Every declared setting at its default: what Teme's settings reader answers before anyone saves.

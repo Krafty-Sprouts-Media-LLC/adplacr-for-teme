@@ -6,7 +6,49 @@ Sources used: the handbook (`docs/guides/developers/`), `docs/reference/`, `pack
 
 Teme under test: `main` at commit 964c7ea, CHANGELOG head 0.8.0-alpha.1.
 
-## Handbook gaps
+## Re-check against Teme 1.0.0 (2026-11-22)
+
+Everything below this section was written against Teme 0.8.0-alpha.1 and is kept as the record of what the first build ran into. Teme 1.0.0 was released after it and the teme-dev copy was updated, so a Sonnet reviewer re-read the 1.0.0 handbook, references and contracts for each finding. I checked the key claims myself (F-01, the page-insertion socket, the testing kit, F-16). Nothing in the plugin was changed for these beyond tests and `requires.teme` (DECISIONS D-14).
+
+| Finding | Teme 1.0.0 |
+|---|---|
+| F-01 `TEME_VERSION` | Fixed: the setup page now says to set it, and the contracts reference names the version. |
+| F-02 ports | Fixed: the compose file reads `TEME_DB_PORT`, `TEME_TEST_DB_PORT`, `TEME_VALKEY_TEST_PORT`. |
+| F-03 version numbers | Fixed: every `@since` is 1.0.0 and the page says "from Teme 1.0.0". |
+| F-04 plugin autoloading | Unchanged: still not written down. |
+| F-05 relative plugin path | Fixed (changelog): paths resolve against the project and a skipped plugin says why. The page still shows `../my-plugin` without stating the rule. |
+| F-06 forgetting a plugin | Partly: the changelog has "Forget a plugin whose code is gone"; the handbook does not say whether it covers a renamed package. |
+| F-07 stub pages, route and job keys, migrations | Fixed: public routes, jobs and tables pages are full, and the route keys are in the manifest reference. |
+| F-08 inline scripts | Partly: an administrator can approve inline scripts (`InlineScripts`, `scripts: true`), but the page says the approval control is not drawn on the form yet. |
+| F-09 translating manifest strings | Fixed: manifest words translate from the plugin's `lang/<locale>.json`. |
+| F-10 cache purge | Fixed in the handbook ("needs no `notify()`"). |
+| F-11 admin pages, repeaters | Socket exists: `contributes.area` with figures, chart and table blocks; repeater settings. Some panels are "still to come". |
+| F-12 plugin tests | Fixed: the `teme/testing` kit (`TemeTestCase`, `plugin()->enable()`, `runJob`, `runSchedules`, `fetch`) and `php artisan test ../my-plugin/tests`. |
+| F-13 `PluginFixtures` on Windows | Not re-checked; the handbook no longer points at it. |
+| F-14 per-article switch ID | Fixed: the page and fields reference give the ID. |
+| F-15 secret for a verified POST | Fixed: a `custom` verifier's `secret` is optional. |
+| F-16 route handlers and settings | Fixed in `public-routes.md` ("built as your plugin's class"), but `tables.md` still says a handler "is built with none of your plugin's doors" (F-20). |
+| F-17 `visibleWhen` | Fixed: supported, plus `settingsSections` and `repeater`. |
+| F-18 smaller gaps | Mostly fixed. The capability table in `concepts/manifest.md` still omits `pages.insert` and `fediverse.*`. |
+| F-19 when a schedule is due | Fixed: `jobs.md` says it, and `runSchedules($moment)` fires one in a test. |
+
+Walls from FEATURES.md that now have a socket in 1.0.0 (none of these is built yet):
+
+- Header, footer, sticky footer and side rails: `PageInsertionContributor` with `PagePosition::head()`, `bodyStart()`, `bodyEnd()` and `fixed(edge, width)`, capability `pages.insert` (`plugins/page-insertions.md`). Rails are 160 or 300 wide.
+- Front page, blog index and archive: `PageFacts` plus `afterItem(n)` and `everyItems(n, max)`; the theme must draw the `between-items` component.
+- Sidebar widget: partly, `PagePosition::region()` around a theme's region; there are still no widgets.
+- Admin ad list, repeater form, duplicate and statistics charts: `contributes.area` and repeater settings.
+- URL rule: `path` on `ArticleFacts` and `PageFacts`.
+- Hooks for other plugins: `contributes.hooks`.
+- Still missing: shortcode and block (no plugin cards), logged-in/guest rule (pages are cached for everyone), a general cache purge.
+
+New small findings on 1.0.0:
+
+**F-20. `tables.md` contradicts `public-routes.md` about route handlers and doors.** `tables.md` says a public route's handler "is built with none of your plugin's doors"; `public-routes.md` says it is built as the plugin class is, with the settings reader or `Jobs` if it asks. My F-16 workaround (a snapshot table kept by a `SettingsChanged` listener) is therefore no longer needed on 1.0.0, if `public-routes.md` is the correct page.
+
+**F-21. 1.0 adds a console step that old instructions do not have.** A plugin with `schedules` is not enabled from the console unless `--as=<administrator's email>` is given, and `Jobs::queue()` refuses when there is no person (a route handler cannot queue a job). This is documented in `jobs.md`, but the setup and first-plugin pages' enable commands do not mention it, and a plugin enabled earlier (as this one was) shows "Its schedules don't run" until it is disabled and enabled again.
+
+## Handbook gaps (written against 0.8.0-alpha.1)
 
 **F-01. A fresh dev checkout reports Teme 0.1.0, so the handbook's own first plugin cannot be enabled.**
 Expected: after "Set up a development site", `teme:plugins:enable` works for a plugin asking `^0.8`, as the first-plugin page shows. Got: `It needs Teme ^0.8; this is Teme 0.1.0.` The version comes from `TEME_VERSION`, which no guide, reference page or `.env.example` mentions (I found it in `config/teme.php`). The testing page says only "set Teme's version to one the manifest's `requires.teme` accepts", without saying how. Did: set `TEME_VERSION=0.8.0-alpha.1` in teme-dev's `.env`. Fix: say so on the setup page, or default the checkout's version to its CHANGELOG head.

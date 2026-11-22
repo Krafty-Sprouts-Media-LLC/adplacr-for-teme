@@ -11,6 +11,8 @@ Each feature is marked:
 
 Teme version this was written against: 0.8.0-alpha.1 (the contracts carry `@since 0.9.0` for insertions, see FINDINGS F-03).
 
+> **Update, 2026-11-22.** The marks below were made against Teme 0.8.0-alpha.1 and describe what 0.1.0 of the plugin builds. Teme 1.0.0 has since added sockets for several "can't yet" rows: page-level positions (header, footer, sticky and rails, front page and listing pages), admin pages and repeaters (an ad list and statistics), inline-script approval, URL rules, and hooks for other plugins. None of these is built yet. The list is in `FINDINGS.md` ("Re-check against Teme 1.0.0") and the order to build in is in `REPORT.md`.
+
 ## Two things in the brief that the WordPress plugin does not have
 
 | Asked about | In the WordPress plugin | In Teme |

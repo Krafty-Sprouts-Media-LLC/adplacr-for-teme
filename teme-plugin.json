@@ -6,7 +6,7 @@
     "description": "Places your ad code inside articles, at the paragraph or heading you choose.",
     "version": "0.1.0",
     "requires": {
-        "teme": "^0.8"
+        "teme": "^1.0"
     },
     "plugin": "KraftySprouts\\AdPlacr\\AdPlacr",
     "capabilities": [

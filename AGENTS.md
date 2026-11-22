@@ -28,7 +28,13 @@ Formatting and static analysis, with the site's own tools:
 ..\teme-dev\vendor\bin\phpstan.bat analyse src --level=6 -a ..\teme-dev\vendor\autoload.php
 ```
 
+## Teme 1.0.0
+
+The plugin asks for Teme `^1.0` and the tests set `teme.version` to `1.0.0`. A plugin with `schedules` is enabled with `php artisan teme:plugins:enable krafty-sprouts/adplacr --agree --as=<administrator email>`, and `JobContext` has `personId()`. On the shared dev site, `TEME_VERSION=1.0.0` must be set in its `.env`. Where the work stopped and what to build next is in `REPORT.md` ("Where I stopped").
+
 ## Read first
+
+- `REPORT.md`, "Where I stopped".
 
 - [Your first plugin](../teme-dev/docs/guides/developers/start/first-plugin.md) and [Hooks](../teme-dev/docs/guides/developers/concepts/hooks.md) in the Teme handbook.
 - `DECISIONS.md` for why things are as they are, `FINDINGS.md` for where Teme's handbook or sockets fell short.

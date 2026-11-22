@@ -26,16 +26,17 @@ uses(TestCase::class, RefreshDatabase::class);
 
 beforeEach(function (): void {
     $this->seed(RoleSeeder::class);
-    config(['teme.version' => '0.8.0-alpha.1']);
+    config(['teme.version' => '1.0.0']);
     app()->instance(Elevation::class, new OperatorElevation);
     config(['teme.plugin_paths' => [realpath(__DIR__.'/../..')]]);
     app(PluginRegistry::class)->flush();
 
-    $status = Artisan::call('teme:plugins:enable', ['name' => 'krafty-sprouts/adplacr', '--agree' => true]);
+    $this->admin = User::factory()->create()->assignRole('administrator');
+
+    // Teme 1.0 runs a plugin's scheduled work as a named administrator (FINDINGS F-20).
+    $status = Artisan::call('teme:plugins:enable', ['name' => 'krafty-sprouts/adplacr', '--agree' => true, '--as' => $this->admin->email]);
     expect($status)->toBe(0, Artisan::output());
     app(PluginLoader::class)->load();
-
-    $this->admin = User::factory()->create()->assignRole('administrator');
 });
 
 /**
@@ -192,6 +193,11 @@ it('prunes counts older than the retention window and keeps the rest', function 
         }
 
         public function progress(int $done, int $total, string $message = ''): void {}
+
+        public function personId(): string
+        {
+            return '1';
+        }
     });
 
     expect(DB::table('adplacr_daily')->orderBy('day')->pluck('impressions')->map(fn ($n): int => (int) $n)->all())->toBe([7, 6]);
